@@ -1,0 +1,166 @@
+python: 
+    povname = renpy.input("What is your name?", length=32)
+
+define csw = Character("Saleswoman",color="#FFFFFF")
+define pov = Character("[mainch]",color="#FFFFFF")
+define csm = Character("Salesman",color="#FFFFFF")
+label start:
+
+    scene dealership lot1 with fade 
+
+    "Before the game starts, we'll need a name for a more interactive experience."
+    default mainch = "default"
+
+    if mainch == "default":
+        $ mainch = renpy.input("What is your name?")
+
+    "After an unexpected raise from your job, you decide it's time to get another car."
+    pov "I think it's time to upgrade the boring car I have now into something more luxurious."
+
+    show sales standing1 at left  with fade
+#improve convo dialoge
+    csw "Welcome to Luxury Enterprises, the new future of driving, how may I help you today [mainch]?"
+
+    pov  "Hi, I was just browsing but I dont know much about these styles of cars and what's so special about them..."
+    pov  "...could you tell me more about these cars and why everyone's so excited about getting them?"
+
+    hide sales standing1 
+
+    show sales pointing1 at left 
+
+    csw "Sure thing! Come inside and we'll discuss more about the cars."
+    
+    # scene change to dealer lobby 
+    scene lobby dealer4
+
+    show sales standing1 at left
+    csw "Here at Luxury Enterprises, we have some of the best and high quality self driving cars."
+
+    pov "Self driving cars? This really is the future!"
+
+    csw "Yes! I did mention that here at Luxury Enterprises, we specialize in the future of driving, and self driving cars are included in that."
+    csw "...but due to them being relatively new in our society, they come with a high risk of injury and danger involved for the user!"
+    csw "and because of that high risk involved, we have classes held for potential buyers to inform them of such risks."
+
+    pov "Wow, I had no idea that there was such a high risk involved with operating a self driving car!"
+    hide sales standing1
+
+    show sales pointing1 at left
+    csw "Yes [mainch] there is, and many people overlook that based on the fact that it is mostly self driving."
+    csw "Keep in mind that there are many engineers and programmers working to improve these vehicles!"
+
+    csw "We hold daily classes and lectures to inform our clients on the dangers and risks so they have an idea of what to expect in case of things going wrong."
+    pov "I'm interested in attending a session to learn more."
+
+    csw "Wonderful! Please follow me to the classroom."
+    
+    hide sales pointing1
+#scene change to classroom , main focal point
+    scene bg classroom3
+    show sales standing1 at left 
+    csw "Here's the classroom, and it appears that class will start soon."
+    csw "The instructor for this course will be here soon."
+    show sales mstand1 at right with fade
+
+#change male sizing to fit frame -- fixed
+    csm "Hello class, I'm sure everyone in the room right now is interested in learning more about self driving cars!"
+
+    hide sales standing1 
+    csm "Today we're discussing 3 major topics and sharing some important knowledge about owning self driving cars."
+
+    hide sales mstand1
+
+    show sales mfold2 at right 
+
+default Warn = False
+default Stats = False
+default Dangers = False
+
+label topicChoice:
+
+    menu:
+        "Warnings about self driving cars" if not Warn:
+            jump WarnTopic
+        "Statistics about self driving cars" if not Stats:
+            jump StatTopic
+        "Dangers involving self driving cars" if not Dangers:
+            jump DangersTopic
+        "Finished!" if Warn and Stats and Dangers:
+            jump continue_main_story
+
+label WarnTopic:
+    $ Warn = True
+    csm "Self driving cars are a recent development in technology and research to improve them is constantly being done."
+    csm "But don't be fooled by the name! Our self driving cars are not fully autonomous and they require a driver to watch the road and to be ready to intervene if anything goes wrong."
+    jump topicChoice
+
+label StatTopic:
+    $ Stats = True
+    csm "Let's go over some statistics about self driving cars."
+    csm "There are 9.1 self driving car crashes per million miles driven while there are 4.1 for regular cars."
+    csm "Although there are over double the crashes for self driving cars, they cause fewer severe injuries than regular cars."
+    csm "The most common types of accidents that self driving cars are involed in are getting rear-ended and sideswiped."
+    csm "A poll revealed that 34\% think the positives of self driving cars outweigh the negatives."
+    jump topicChoice
+
+label DangersTopic:
+    $ Dangers = True
+    csm "Now let's talk about some of the more specific dangers of self-driving cars."
+    csm "First, errors or damage to the self driving car's sensors or software can easily create problems on the road if not detected."
+    csm "Also, road and weather conditions such as faded lane markings and snow could make it harder for the vehicle to navigate."
+    csm "Third, self driving cars may be challenged by unexpected traffic conditions."
+    csm "Lastly, self driving cars could be hacked and have some features be controlled remotely."
+    jump topicChoice
+
+label continue_main_story:
+    csm "Congratulations! You have finished the informational lecture"
+#another game option if user wants to purchase vehicle, if yes then signature
+
+    csm "After learning about the risks involved with purchasing a self driving vehicle, are you still interested in buying one?"
+    pov "{i}Hmmm... after all I've learned..."
+
+default YesOpt = False
+default NoOpt = False
+
+label topicChoice2:
+
+    menu:
+        "Yes" if not YesOpt:
+            jump Yes1
+        "No" if not NoOpt:
+            jump No1
+
+label endingPoints:
+
+    menu:
+        "Sign contract."if YesOpt and not NoOpt:
+            show signature1 at truecenter
+            show text "{color=#000000}[mainch]{/color} " at truecenter
+            with dissolve
+            pause 2
+            hide text
+            with dissolve
+            jump continue_main_story1
+        "Done."if NoOpt and not YesOpt:
+            jump continue_main_story1
+
+label Yes1:
+    $ YesOpt = True
+    csm "Wonderful, you'll need to sign a contract stating that you have attended the lecture and understand the high risks involved."
+
+    jump endingPoints 
+
+label No1:
+    $ NoOpt = True
+    csm "Understandable, not everyone is comfortable with driving such a vehicle that comes with more dangers than the average car."
+    jump endingPoints
+
+label continue_main_story1:
+
+
+    csm "Thank you for your time today."
+##if yes, get signature 
+##if no, return and exit game
+
+return
+    
